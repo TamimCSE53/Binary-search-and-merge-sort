@@ -1,0 +1,197 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define       ll           long long
+#define       ull          unsigned long long
+#define       CY           cout << "YES\n"
+#define       CN           cout << "NO\n"
+#define      allok()      (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+
+const int M = 1e8;
+const int N = 1e5+3;
+int A[N];
+ll a[N];
+
+//** Number theory --> begin
+
+ll gcd ( ll a, ll b )
+{
+    if ( b == 0 ) return a;
+    else return gcd ( b, a%b );
+}
+ll lcm ( ll a, ll b )
+{
+    return (a*b) / gcd(a, b);
+}
+ll ETF ( ll a )
+{
+    ll res = a;
+    for ( ll i=2; i*i<=a; i++ ) {
+        if ( !(a%i) ) {
+            while ( !(a%i) ) a /= i;
+            res -= res/i;
+        }
+    }
+    if ( a > 1 ) res -= res/a;
+    return res;
+}
+
+void fact ( )
+{
+    A[0] = 1;
+    for ( int i=1; i<N; i++ ) {
+        A[i] = ( A[i-1]*1LL*i ) % M;
+    }
+}
+int binEXP ( int a, int b )
+{
+    int ans = 1;
+    while ( b ) {
+        if ( b&1 ) {
+            ans = ( ans*1LL*a ) % M;
+        }
+        a = ( a*1LL*a ) % M;
+        b >>= 1;
+    }
+    return ans;
+}
+//** Number theory --> end
+
+
+//** Bitwise --> begin
+
+// swap ( x, y ) --> x=x^y, y=x^y, x=x^y
+// if x=a then x=b // if x=b then x=a --> x=a^b^x
+// a+b=(a^b)+2(a&b)
+// a+b=(a|b)+(a&b)
+
+bool odd ( ll x )
+{
+    return (x & 1); // odd even check
+}
+bool checkkthbit ( ll x, ll k )
+{
+    return (x & (1<<k));  // k'th bit set or not
+}
+ll setkthbit1 ( ll x, ll k )
+{
+    return (x | (1<<k));   // make k'th bit 1;
+}
+ll setkthbit0 ( ll x, ll k )
+{
+    return (x &~ (1<<k));   // make k'th bit 0;
+}
+ll mulnumby2powk ( ll x, ll k )
+{
+    return (x<<k);   // x*(pow(2,k))
+}
+ll divnumby2powk ( ll x, ll k )
+{
+    return (x>>k);   // x/pow(2,k)
+}
+int noofsetbitint ( int x )
+{
+    return __builtin_popcount(x);  // int set bit count
+}
+ll noofsetbitll ( ll x )
+{
+    return __builtin_popcountll(x); // ll set bit count
+}
+ll togglekthbit ( ll x, ll k )
+{                          // if k = 0 then k = 1
+    return (x ^ ( 1<<k ));  // if k = 1 then k = 0
+}
+bool powerof2 ( ll x )
+{
+    return (x && !(x&(x-1))); // power of 2 checking
+}
+
+//** Bitwise --> end
+
+int laExp ( int a, int b, int m )
+{
+    a %= m;
+    int ans = 1;
+    while ( b > 0 ) {
+        if ( b&1 ) ans = ( ans*a ) % m;
+        a = ( a*a ) % m;
+        b >>= 1;
+    }
+    return ans;
+}
+
+void merge (ll l, ll r, ll m)
+{
+    ll las = m - l + 1;
+    ll ras = r - m;
+    ll la[las+1], ra[ras+1];
+    for (ll i=0; i<las; i++) la[i] = a[i+l];
+    for (ll i=0; i<ras; i++) ra[i] = a[i+m+1];
+    la[las] = INT_MAX;
+    ra[ras] = INT_MAX;
+    ll li=0, ri=0;
+    for (ll i=l; i<=r; i++) {
+        if (la[li] <= ra[ri]) {
+            a[i] = la[li];
+            li++;
+        }
+        else {
+            a[i] = ra[ri];
+            ri++;
+        }
+    }
+}
+
+void mergeSort (ll l, ll r)
+{
+    if (l == r) return;
+    ll m = (l + r) >> 1;
+    mergeSort (l, m);
+    mergeSort (m + 1, r);
+    merge (l, r, m);
+}
+
+void solve()
+{
+    ll x;
+    cout << "Input array size: ";
+    cin >> x;
+    cout << "Input array elements: ";
+  //  ll a[x];
+    for (ll i=0; i<x; i++) cin >> a[i];
+    cout << "After applying merge sort: ";
+    mergeSort(0, x-1);
+    for (ll i=0; i<x; i++) cout << a[i] << " ";
+    cout << endl;
+    ll tr;
+    cout << "Enter the value: ";
+    cin >> tr;
+    ll lo=0, hi=x-1;
+    while (lo < hi) {
+        ll m = (lo + hi + 1) >> 1;
+        if (a[m] > tr) hi = m - 1;
+        else lo = m;
+    }
+    cout << "Minimum greater value of " << tr << ": " << a[lo+1] << endl;
+    cout << "Enter another value: ";
+    cin >> tr;
+    lo=0, hi=x-1;
+    while (lo < hi) {
+        ll m = (lo + hi + 1) >> 1;
+        if (a[m] >= tr) hi = m - 1;
+        else lo = m;
+    }
+    cout << "Minimum smaller value of " << tr << ": " << a[lo] << endl;
+
+}
+
+int main() {
+
+       // allok();
+        ll tc, cnt=1;
+        solve();
+        //solve();
+
+
+ return 0;
+}
